@@ -1,2 +1,2 @@
-# amaranth-
-FSU Computer Science Capstone Group Orject
+# amaranth
+FSU Computer Science Capstone Group Project
