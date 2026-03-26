@@ -1,1 +1,30 @@
-body { color: red; }
+body {
+    /* Use full page */
+    margin: 0;
+
+    /* Allows us to use flex-grow 1; on main and push the footer to the bottom when the whole screen isn't filled */
+    display: flex;
+    flex-direction: column;
+    /* For the above */
+    min-height: 100vh;
+
+    /* Just to set something less ugly by default */
+    font-family: sans-serif;
+}
+/* See notes above */
+main { flex-grow: 1; }
+
+header, footer {
+    background-color: gray;
+    display: inline-block;
+    width: 100%;
+}
+header p, footer p {
+    /* Stay on one line */
+    display: inline-block;
+}
+
+/* Default margin on all sides to get away from page sides */
+p { margin: 1rem; }
+
+.right { float: right; }
