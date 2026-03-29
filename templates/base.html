@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Amaranth</title>
+    <link rel="stylesheet" href="/static/style.css?v=1">
+  </head>
+  <body>
+    <header>
+      <p>Amaranth</p>
+      <p class="right"><a href="/register">Register</a> | <a href="/login">Login</a></p>
+    </header>
+    <main>
+      {# This is a templating comment #}
+      {% block body %}
+      <p>Base! You shouldn't be seeing this. Extend it to other templates instead.</p>
+      {% endblock %}
+    </main>
+    <footer>
+      <p>Footer</p>
+      <p class="right"><a rel="external" href="https://github.com/Miabread/amaranth">Source</a></p>
+    </footer>
+  </body>
+</html>
