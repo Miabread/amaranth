@@ -43,6 +43,9 @@ dummy_post_db = [
 def posts(): 
     return render_template("posts.html", posts = dummy_post_db)
 
+@app.route("/posts/<post_id>")
+def posts_id(post_id):
+    return render_template("posts_id.html", post = dummy_post_db[int(post_id)])
 
 # This whines about "This is a development server. Do not use it in a production deployment. Use a production WSGI server instead."
 # but that's something to fix in the future. It just requires a different way of starting the sever using some other dependency
