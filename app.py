@@ -42,25 +42,25 @@ def welcome(username):
     # This can be accessed like an array
     dbresult = cursor.fetchone()
 
+    # If cursor.rowcount is 0 then the result doesn't exist'
+    if not cursor.rowcount:
+        return render_template("notfound.html", type="User", username=username)
+
     # If there's no profile picture set then change it to use the placeholder one
     profile_picture = dbresult[2]
     if not profile_picture:
         profile_picture = "no_profile_picture_set.png"
 
-    # If cursor.rowcount is 0 then the result doesn't exist'
-    if not cursor.rowcount:
-        return render_template("notfound.html", type="User", username=username)
-    else:
-        return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture)
+    return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture)
 
 @app.route("/admin/<name>")
 def admin_view(name):
     return render_template("admin_view.html", name=name)
 
 dummy_post_db = [
-    {"post_id": 0, "title": "Foo title",  "content": "Foo content", "author": "Foo author", "likes": 123 },
-    {"post_id": 1, "title": "Bar title",  "content": "Bar content", "author": "Bar author", "likes": 456 },
-    {"post_id": 2, "title": "Baz title",  "content": "Baz content", "author": "Baz author", "likes": 789 },
+    {"post_id": 0, "title": "Foo title",  "content": "Foo content", "author": "test_username", "likes": 123 },
+    {"post_id": 1, "title": "Bar title",  "content": "Bar content", "author": "problem_child", "likes": 456 },
+    {"post_id": 2, "title": "Baz title",  "content": "Baz content", "author": "missing_bio", "likes": 789 },
     {"post_id": 3, "title": "Bao title",  "content": "Bao content", "author": "Bao author", "likes": 922 },
     {"post_id": 4, "title": "Fizz title",  "content": "Fizz content", "author": "Fizz author", "likes": 3 },
     {"post_id": 5, "title": "Buzz title",  "content": "Buzz content", "author": "Buzz author", "likes": 52 },
