@@ -28,3 +28,18 @@ header p, footer p {
 p { margin: 1rem; }
 
 .right { float: right; }
+
+.profile-info {
+    background-color: lightgray;
+    width: 50%;
+    margin: 1rem auto;
+    padding: 1rem;
+    text-align: center;
+}
+.profile-info img {
+    border: solid black 3px;
+    border-radius: 50%;
+    height: 8rem;
+    width: 8rem;
+    object-fit: cover;
+}

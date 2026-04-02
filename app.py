@@ -33,7 +33,7 @@ def login():
 @app.route("/user/<username>")
 def welcome(username):
     # SQL query to select the display name and bio from a user
-    query = "SELECT display_name,bio FROM user WHERE username = %s"
+    query = "SELECT display_name,bio,profile_picture FROM user WHERE username = %s"
 
     # Execute SQL command using the username to replace %s
     # not sure why the replacement has to be a tuple, but it does
@@ -41,12 +41,17 @@ def welcome(username):
 
     # This can be accessed like an array
     dbresult = cursor.fetchone()
-    displayname = dbresult[0]
-    bio = dbresult[1]
-    print(displayname)
-    print(bio)
 
-    return render_template("user.html", name=username)
+    # If there's no profile picture set then change it to use the placeholder one
+    profile_picture = dbresult[2]
+    if not profile_picture:
+        profile_picture = "no_profile_picture_set.png"
+
+    # If cursor.rowcount is 0 then the result doesn't exist'
+    if not cursor.rowcount:
+        return render_template("notfound.html", type="User", username=username)
+    else:
+        return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture)
 
 @app.route("/admin/<name>")
 def admin_view(name):
