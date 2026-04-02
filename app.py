@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import mysql.connector
 
 app = Flask(__name__)
 
@@ -6,6 +7,15 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Things under /static are served directly without needing anything here
 # Every time you make a change to any files being served you gotta restart the webserver too
+
+# Change this to be something more secure later, but this is fine and easy for local testing
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="",
+  database="amaranth"
+)
+cursor = mydb.cursor()
 
 @app.route('/')
 def render_base():
@@ -20,9 +30,23 @@ def signin():
 def login():
     return render_template("login.html")
 
-@app.route("/user/<name>")
-def welcome(name):
-    return render_template("user.html", name=name)
+@app.route("/user/<username>")
+def welcome(username):
+    # SQL query to select the display name and bio from a user
+    query = "SELECT display_name,bio FROM user WHERE username = %s"
+
+    # Execute SQL command using the username to replace %s
+    # not sure why the replacement has to be a tuple, but it does
+    cursor.execute(query, (username, ))
+
+    # This can be accessed like an array
+    dbresult = cursor.fetchone()
+    displayname = dbresult[0]
+    bio = dbresult[1]
+    print(displayname)
+    print(bio)
+
+    return render_template("user.html", name=username)
 
 @app.route("/admin/<name>")
 def admin_view(name):
