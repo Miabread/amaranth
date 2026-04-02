@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 02, 2026 at 07:37 PM
+-- Generation Time: Apr 02, 2026 at 08:29 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,7 @@ CREATE TABLE `user` (
   `password` varchar(128) NOT NULL,
   `date` date NOT NULL,
   `display_name` varchar(128) NOT NULL,
+  `profile_picture` varchar(48) NOT NULL,
   `bio` text NOT NULL,
   `private` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -43,9 +44,10 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, `display_name`, `bio`, `private`) VALUES
-(1, 0, 'bar_author', '', '', '2026-03-11', 'Bar author (this is the display name)', 'Bar author\'s bio!', 0),
-(3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'Test user bio', 0);
+INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, `display_name`, `profile_picture`, `bio`, `private`) VALUES
+(1, 0, 'problem_child', '', '', '2026-03-11', 'problemchild problemchild problemchild problemchild', 'problem_child.png', 'problemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchild', 0),
+(2, 1, 'missing_bio', '', '', '2026-04-08', 'missing bio', '', '', 0),
+(3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'test_username.png', 'Test user bio', 0);
 
 --
 -- Indexes for dumped tables
