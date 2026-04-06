@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
+import random
 
 app = Flask(__name__)
 
@@ -64,10 +65,20 @@ def posts_new_page():
 
 @app.post("/posts/new")
 def posts_new_form():
-    new_post = { "post_id": create_post_id(), "likes": 0 }
+    new_post = { "post_id": create_post_id(), "likes": random.randint(0, 999) }
+
+    if "title" not in request.form or 30 < len(request.form["title"]) < 2:
+        abort(400, description="Invalid parameter 'title'")
     new_post["title"] = request.form["title"]
+
+    if "author" not in request.form or 30 < len(request.form["author"]) < 2:
+        abort(400, description="Invalid parameter 'author'")
     new_post["author"] = request.form["author"]
+
+    if "content" not in request.form or 300 < len(request.form["content"]) < 2:
+        abort(400, description="Invalid parameter 'content'")
     new_post["content"] = request.form["content"]
+
     dummy_post_db.append(new_post)
     return redirect(url_for("posts", posts_id = new_post["post_id"]))
 
