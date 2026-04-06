@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<a href="/posts/new">Create New Post</a>
 <ul>
 {% for post in posts %}
     <li><a href="/posts/{{post.post_id}}">{{post.title}}</a> <br> {{post.likes}} likes, by <a href="/user/{{post.author}}">@{{post.author}}</a></li>

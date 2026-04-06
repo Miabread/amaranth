@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<form method="post" action="/posts/new" id="new_post_form">
+    <h1>Create New Post</h1>
+    <span>
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" placeholder="Post title..." minlength="2" maxlength="30" required/>
+    </span>
+    <span>
+        <label for="author">Author (Testing Only)</label>
+        <input id="author" name="author" type="text" placeholder="Post author..." minlength="2" maxlength="30" required/>
+    </span>
+    <span>
+        <label for="content">Content</label>
+        <textarea id="content" name="content" placeholder="Post content..." minlength="2" maxlength="300" required></textarea>
+    </span>
+    <input type="submit" value="Create Post"/>
+</form>
+<style>
+#new_post_form  {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    margin: auto;
+    gap: 5vh;
+}
+
+#new_post_form > span {
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea {
+  border: 2px solid currentColor;
+}
+input:invalid, textarea:invalid {
+  border: 2px dashed red;
+}
+</style>
+{% endblock %}
