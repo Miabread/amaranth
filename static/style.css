@@ -43,3 +43,16 @@ p { margin: 1rem; }
     width: 8rem;
     object-fit: cover;
 }
+
+.post {
+    background-color: lightgray;
+    width: 50%;
+    margin: 1rem auto;
+    padding: 1rem;
+}
+.post h3 {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+}
+
+.post.noposts { text-align: center; }

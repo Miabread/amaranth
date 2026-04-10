@@ -50,10 +50,20 @@ def welcome(username):
 
     # If there's no profile picture set then change it to use the placeholder one
     profile_picture = dbresult[2]
+
+    # Select everything from all posts and the usernames of those posts
+    # If a user doesn't exist it should be NULL
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE user.username = %s"
+
+    # Execute SQL query
+    cursor.execute(query, (username, ))
+
+    # This can be accessed like an array
+    posts = cursor.fetchall()
     if not profile_picture:
         profile_picture = "no_profile_picture_set.png"
 
-    return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture)
+    return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture, posts=posts)
 
 @app.route("/admin/<name>")
 def admin_view(name):
