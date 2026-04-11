@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{# This is a comment #}
+{# By using block body here it replaces the block body in base #}
+{% block body %}
+<p>Welcome back to Amaranth!</p>
+
+<p>Email</p>
+<input type="username" placeholder="Email Address"/><br>
+
+<p>Password</p>
+<input type="password" placeholder="Password"/><br>
+
+<button>Log In</button><br>
+
+<a href="forgot_password">Forgot Password?</a>
+
+{% endblock %}
