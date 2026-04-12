@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 
-{# This is a comment #}
-{# By using block body here it replaces the block body in base #}
-{# {{ name }} will be replaced by whatever variable you set it to #}
 {% block body %}
-<p>Extended with {{ name }}</p>
+<div class="profile-info">
+    <h2>{{ displayname }}</h2>
+    <img src="/static/profile-pictures/{{ profile_picture }}">
+    <p>{{ bio }}</p>
+</div>
+{% if posts|length > 0 %}
+    {% for post in posts %}
+    <div class="post">
+        <h3><a href="/posts/{{post[0]}}">{{post[1]}}</a></h3>
+        {{post[5]}} likes, by <a href="/user/{{post[6]}}">@{{post[6]}}</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="post noposts"><h4>This user has no posts!</h4></div>
+{% endif %}
 {% endblock %}
