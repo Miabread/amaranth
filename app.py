@@ -48,20 +48,20 @@ def dummy_create_post(post):
     dummy_post_db[id] = post
 
 for post in [
-    {"title": "Foo title",  "content": "Foo content", "author": "Foo author", "likes": 123 },
-    {"title": "Bar title",  "content": "Bar content", "author": "Bar author", "likes": 456 },
-    {"title": "Baz title",  "content": "Baz content", "author": "Baz author", "likes": 789 },
-    {"title": "Bao title",  "content": "Bao content", "author": "Bao author", "likes": 922 },
-    {"title": "Fizz title",  "content": "Fizz content", "author": "Fizz author", "likes": 3 },
-    {"title": "Buzz title",  "content": "Buzz content", "author": "Buzz author", "likes": 52 },
-    {"title": "Meow title",  "content": "Meow content", "author": "Meow author", "likes": 85 },
-    {"title": "Woof title",  "content": "Woof content", "author": "Woof author", "likes": 34 },
+    {"title": "Foo title",  "content": "Foo content", "author": "Foo author", "likes": 123, "hidden": False },
+    {"title": "Bar title",  "content": "Bar content", "author": "Bar author", "likes": 456, "hidden": False },
+    {"title": "Baz title",  "content": "Baz content", "author": "Baz author", "likes": 789, "hidden": False },
+    {"title": "Bao title",  "content": "Bao content", "author": "Bao author", "likes": 922, "hidden": False },
+    {"title": "Fizz title",  "content": "Fizz content", "author": "Fizz author", "likes": 3, "hidden": False },
+    {"title": "Buzz title",  "content": "Buzz content", "author": "Buzz author", "likes": 52, "hidden": False },
+    {"title": "Meow title",  "content": "Meow content", "author": "Meow author", "likes": 85, "hidden": False },
+    {"title": "Woof title",  "content": "Woof content", "author": "Woof author", "likes": 34, "hidden": False },
 ]:
     dummy_create_post(post)
 
 @app.route("/posts/")
 def posts(): 
-    return render_template("posts.html", posts = dummy_post_db.values())
+    return render_template("posts.html", posts = filter(lambda post: not post["hidden"], dummy_post_db.values()) )
 
 @app.route("/posts/<post_id>")
 def posts_id(post_id):
@@ -101,6 +101,11 @@ def admin_posts_id(post_id):
 @app.post("/admin/posts/<post_id>/delete")
 def admin_posts_id_delete(post_id):
     del dummy_post_db[int(post_id)]
+    return render_template("admin_posts.html", posts = dummy_post_db.values())
+
+@app.post("/admin/posts/<post_id>/hidden")
+def admin_posts_id_hidden(post_id):
+    dummy_post_db[int(post_id)]["hidden"] = not dummy_post_db[int(post_id)]["hidden"]
     return render_template("admin_posts.html", posts = dummy_post_db.values())
 
 # This whines about "This is a development server. Do not use it in a production deployment. Use a production WSGI server instead."

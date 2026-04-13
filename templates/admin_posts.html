@@ -6,9 +6,14 @@
     <a href="/admin/posts/{{post.post_id}}">{{post.title}}</a> <br />
     {{post.likes}} likes, by
     <a href="/user/{{post.author}}">@{{post.author}}</a>
+    {% if post["hidden"] %} , hidden {% endif %}
     <form action="/admin/posts/{{post.post_id}}/delete" method="POST">
       <input type="hidden" name="_method" value="DELETE" />
       <button type="submit">Delete Item</button>
+    </form>
+    <form action="/admin/posts/{{post.post_id}}/hidden" method="POST">
+      <input type="hidden" name="_method" value="HIDDEN" />
+      <button type="submit">Toggle Hidden</button>
     </form>
   </li>
   <br />
