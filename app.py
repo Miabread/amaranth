@@ -40,20 +40,28 @@ def create_inc_id(start=0):
 
 create_post_id = create_inc_id(0)
 
-dummy_post_db = [
-    {"post_id": create_post_id(), "title": "Foo title",  "content": "Foo content", "author": "Foo author", "likes": 123 },
-    {"post_id": create_post_id(), "title": "Bar title",  "content": "Bar content", "author": "Bar author", "likes": 456 },
-    {"post_id": create_post_id(), "title": "Baz title",  "content": "Baz content", "author": "Baz author", "likes": 789 },
-    {"post_id": create_post_id(), "title": "Bao title",  "content": "Bao content", "author": "Bao author", "likes": 922 },
-    {"post_id": create_post_id(), "title": "Fizz title",  "content": "Fizz content", "author": "Fizz author", "likes": 3 },
-    {"post_id": create_post_id(), "title": "Buzz title",  "content": "Buzz content", "author": "Buzz author", "likes": 52 },
-    {"post_id": create_post_id(), "title": "Meow title",  "content": "Meow content", "author": "Meow author", "likes": 85 },
-    {"post_id": create_post_id(), "title": "Woof title",  "content": "Woof content", "author": "Woof author", "likes": 34 },
-]
+dummy_post_db = {}
+
+def dummy_create_post(post):
+    id = create_post_id()
+    post["post_id"] = id
+    dummy_post_db[id] = post
+
+for post in [
+    {"title": "Foo title",  "content": "Foo content", "author": "Foo author", "likes": 123 },
+    {"title": "Bar title",  "content": "Bar content", "author": "Bar author", "likes": 456 },
+    {"title": "Baz title",  "content": "Baz content", "author": "Baz author", "likes": 789 },
+    {"title": "Bao title",  "content": "Bao content", "author": "Bao author", "likes": 922 },
+    {"title": "Fizz title",  "content": "Fizz content", "author": "Fizz author", "likes": 3 },
+    {"title": "Buzz title",  "content": "Buzz content", "author": "Buzz author", "likes": 52 },
+    {"title": "Meow title",  "content": "Meow content", "author": "Meow author", "likes": 85 },
+    {"title": "Woof title",  "content": "Woof content", "author": "Woof author", "likes": 34 },
+]:
+    dummy_create_post(post)
 
 @app.route("/posts/")
 def posts(): 
-    return render_template("posts.html", posts = dummy_post_db)
+    return render_template("posts.html", posts = dummy_post_db.values())
 
 @app.route("/posts/<post_id>")
 def posts_id(post_id):
@@ -65,7 +73,7 @@ def posts_new_page():
 
 @app.post("/posts/new")
 def posts_new_form():
-    new_post = { "post_id": create_post_id(), "likes": random.randint(0, 999) }
+    new_post = { "likes": random.randint(0, 999) }
 
     if "title" not in request.form or 30 < len(request.form["title"]) < 2:
         abort(400, description="Invalid parameter 'title'")
@@ -79,8 +87,21 @@ def posts_new_form():
         abort(400, description="Invalid parameter 'content'")
     new_post["content"] = request.form["content"]
 
-    dummy_post_db.append(new_post)
+    dummy_create_post(new_post)
     return redirect(url_for("posts", posts_id = new_post["post_id"]))
+
+@app.route("/admin/posts/")
+def admin_posts(): 
+    return render_template("admin_posts.html", posts = dummy_post_db.values())
+
+@app.route("/admin/posts/<post_id>")
+def admin_posts_id(post_id):
+    return render_template("admin_posts_id.html", post = dummy_post_db[int(post_id)])
+
+@app.post("/admin/posts/<post_id>/delete")
+def admin_posts_id_delete(post_id):
+    del dummy_post_db[int(post_id)]
+    return render_template("admin_posts.html", posts = dummy_post_db.values())
 
 # This whines about "This is a development server. Do not use it in a production deployment. Use a production WSGI server instead."
 # but that's something to fix in the future. It just requires a different way of starting the sever using some other dependency
