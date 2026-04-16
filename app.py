@@ -44,9 +44,9 @@ def welcome(username):
     # This can be accessed like an array
     dbresult = cursor.fetchone()
 
-    # If cursor.rowcount is 0 then the result doesn't exist'
-    if not cursor.rowcount:
-        return render_template("notfound.html", type="User", username=username)
+    # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
+    if cursor.rowcount < 1:
+        return render_template("notfound.html", type="User", data=username)
 
     # If there's no profile picture set then change it to use the placeholder one
     profile_picture = dbresult[2]
@@ -73,7 +73,8 @@ def admin_view(name):
 def posts():
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
-    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id"
+    # Don't show hidden posts
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post.hidden = 0"
 
     # Execute SQL query
     cursor.execute(query)
@@ -94,6 +95,10 @@ def posts_id(post_id):
 
     # This can be accessed like an array
     dbresult = cursor.fetchone()
+
+    # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
+    if cursor.rowcount < 1:
+        return render_template("notfound.html", type="Post", data=post_id)
 
     return render_template("posts_id.html", post = dbresult)
 
@@ -123,6 +128,66 @@ def posts_new_form():
     mydb.commit()
 
     return redirect("/posts/" + str(cursor.lastrowid))
+
+@app.route("/admin/posts/")
+def admin_posts(): 
+    # Select everything from all posts and the usernames of those posts
+    # If a user doesn't exist it should be NULL
+    # Don't show hidden posts
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id"
+
+    # Execute SQL query
+    cursor.execute(query)
+
+    # This can be accessed like an array
+    dbresult = cursor.fetchall()
+
+    return render_template("admin_posts.html", posts = dbresult)
+
+@app.route("/admin/posts/<post_id>")
+def admin_posts_id(post_id):
+    # Select everything from the post id and the username who created it
+    # If a user doesn't exist it should be NULL
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post_id = %s"
+
+    # Execute SQL query
+    cursor.execute(query, (post_id, ))
+
+    # This can be accessed like an array
+    dbresult = cursor.fetchone()
+
+    # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
+    if cursor.rowcount < 1:
+        return render_template("notfound.html", type="Post", data=post_id)
+    
+    return render_template("admin_posts_id.html", post = dbresult)
+
+@app.post("/admin/posts/<post_id>/delete")
+def admin_posts_id_delete(post_id):
+    query = "DELETE FROM post WHERE post_id = %s"
+
+    # Execute SQL delete
+    cursor.execute(query, (post_id, ))
+
+    # Actually update the DB
+    mydb.commit()
+
+    # Redirect to admin posts
+    return redirect(url_for('admin_posts'))
+
+@app.post("/admin/posts/<post_id>/hidden")
+def admin_posts_id_hidden(post_id):
+    # This inverts the value of hidden, toggling it
+    query = "UPDATE post SET hidden = NOT hidden WHERE post_id = %s"
+
+    # Execute SQL delete
+    cursor.execute(query, (post_id, ))
+
+    # Actually update the DB
+    mydb.commit()
+
+    # Redirect to admin posts
+    return redirect(url_for('admin_posts'))
 
 # This whines about "This is a development server. Do not use it in a production deployment. Use a production WSGI server instead."
 # but that's something to fix in the future. It just requires a different way of starting the sever using some other dependency

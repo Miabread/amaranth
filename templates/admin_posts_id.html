@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block body %}
+<h1>{{post[1]}}</h1>
+<h3>
+  {{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a>
+  {% if post[6] %} , hidden {% endif %}
+</h3>
+<p>{{post[2]}}</p>
+<form action="/admin/posts/{{post[1]}}/delete" method="POST">
+  <input type="hidden" name="_method" value="DELETE" />
+  <button type="submit">Delete Item</button>
+</form>
+<form action="/admin/posts/{{post[1]}}/hidden" method="POST">
+      <input type="hidden" name="_method" value="HIDDEN" />
+      <button type="submit">Toggle Hidden</button>
+    </form>
+{% endblock %}
