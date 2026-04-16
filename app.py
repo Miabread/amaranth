@@ -70,7 +70,7 @@ def signup():
             return redirect('/signup')
 
         cursor.execute(
-            "INSERT INTO user (type, username, email, password, display_name, date) VALUES (0, %s, %s, %s, %s, NOW())",
+            "INSERT INTO user (type, username, email, password, date, display_name, profile_picture, bio, private) VALUES (0, %s, %s, %s, NOW(), %s, 'problem_child.png', '', 0)",
             [username, email, hashed, username]
         )
         mydb.commit()
