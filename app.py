@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, flash
 import random
 import mysql.connector
 from datetime import date
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 app = Flask(__name__)
+app.secret_key = "a"
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -24,13 +27,90 @@ def render_base():
     # This works relative to the templates folder by default
     return render_template("home.html")
 
-@app.route("/signup")
-def signin():
+@app.route('/test-flash')
+def test_flash():
+    flash("Hello flash", "info")
+    return redirect(url_for('signup'))  # page that includes flashing template code
+
+
+@app.route("/signup", methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip().lower()
+        email = request.form.get('email', '').strip().lower()
+        pw = request.form.get('password', '')
+        pw2 = request.form.get('password2', '')
+
+        if not (username and email and pw and pw2):
+            flash("All fields required", "error")
+            return redirect('/signup')
+
+        elif len(username) < 3:
+            flash("Username must be at least 3 characters", "error")
+            return redirect('/signup')
+
+        elif pw != pw2:
+            flash("Passwords do not match", "error")
+            return redirect('/signup')
+
+        elif len(pw) < 8:
+            flash("Password must be at least 8 characters", "error")
+            return redirect('/signup')
+
+        hashed = PasswordHasher().hash(pw)
+
+        cursor.execute("SELECT user_id FROM user WHERE username=%s", [username])
+        if cursor.fetchone():
+            flash("Username is taken", "error")
+            return redirect('/signup')
+
+        cursor.execute("SELECT user_id FROM user WHERE email=%s", [email])
+        if cursor.fetchone():
+            flash("Email already registered", "error")
+            return redirect('/signup')
+
+        cursor.execute(
+            "INSERT INTO user (type, username, email, password, display_name, date) VALUES (0, %s, %s, %s, %s, NOW())",
+            [username, email, hashed, username]
+        )
+        mydb.commit()
+        flash("Account created", "success")
+        return redirect('/login')
+
     return render_template("signup.html")
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        pw = request.form.get('password', '')
+
+        cursor.execute(
+            "SELECT user_id, username, password FROM user WHERE email=%s",
+            [email]
+        )
+        data = cursor.fetchone()
+        if not data:
+            flash("Email or password is incorrect", "error")
+            return redirect('/login')
+
+        try:
+            if PasswordHasher().verify(data[2], pw):
+                flash("Successfully logged in", "success")
+                return redirect(f'/user/{data[1]}')
+        except VerifyMismatchError:
+            flash("Email or password is incorrect", "error")
+            return redirect('/login')
+        except Exception as e:
+            raise
+            flash("An unexpected error has occurred", "error")
+            return redirect('/login')
+
     return render_template("login.html")
+
+@app.route("/forgot_password")
+def forgot_password():
+    return render_template("forgot_password.html")
 
 @app.route("/user/<username>")
 def welcome(username):
