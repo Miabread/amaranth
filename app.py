@@ -174,13 +174,23 @@ def posts_id(post_id):
     cursor.execute(query, (post_id, ))
 
     # This can be accessed like an array
-    dbresult = cursor.fetchone()
+    post = cursor.fetchone()
 
     # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
     if cursor.rowcount < 1:
         return render_template("notfound.html", type="Post", data=post_id)
 
-    return render_template("posts_id.html", post = dbresult)
+    # Select all comments on this post
+    # If a post doesn't exist it should be NULL
+    query = "SELECT comment.*,user.username FROM comment LEFT JOIN user ON comment.author = user.user_id WHERE post_id = %s"
+
+    # Execute SQL query
+    cursor.execute(query, (post_id, ))
+
+    # This can be accessed like an array
+    comments = cursor.fetchall()
+
+    return render_template("posts_id.html", post = post, comments = comments)
 
 @app.get("/posts/new")
 def posts_new_page():

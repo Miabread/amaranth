@@ -4,4 +4,14 @@
 <h1>{{post[1]}}</h1>
 <h3>{{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></h3>
 <p>{{post.content}}</p>
+{% if comments|length > 0 %}
+    {% for comment in comments %}
+    <div class="post">
+        <p><a href="/user/{{comment[6]}}">@{{comment[6]}}</a> - {{comment[5]}} likes - commented {{comment[4]}}</p>
+        <p>{{comment[2]}}</p>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="post noposts"><h4>This post has no comments!</h4></div>
+{% endif %}
 {% endblock %}
