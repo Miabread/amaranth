@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 20, 2026 at 03:51 PM
+-- Generation Time: Apr 20, 2026 at 05:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `amaranth`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `comment_id` int(255) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `author` int(255) NOT NULL,
+  `date` date NOT NULL,
+  `likes` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `comment`
+--
+
+INSERT INTO `comment` (`comment_id`, `post_id`, `content`, `author`, `date`, `likes`) VALUES
+(1, 1, 'Normal text for test post', 3, '2026-04-20', 321),
+(2, 2, '<h1>This shouldn\'t work</h1>\r\nStupid problem child.', 1, '2026-04-02', 2),
+(3, 1, 'Another test comment', 2, '2026-04-09', 3),
+(4, 1, 'Another another test by test_username', 3, '2026-04-17', 999),
+(5, 2, 'Really long text really long text really long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long text', 1, '2026-04-01', 0);
 
 -- --------------------------------------------------------
 
@@ -44,7 +70,7 @@ CREATE TABLE `post` (
 INSERT INTO `post` (`post_id`, `title`, `content`, `author`, `date`, `likes`, `hidden`) VALUES
 (1, 'Test post', 'Testposttestposttestpost', 1, '2026-04-07', 32, 0),
 (2, 'the problem child', 'noone', 1, '2026-04-22', 3, 0),
-(9, 'Test insert', 'Test', 1, '2026-04-08', 0, 1);
+(9, 'Test insert', 'Test', 1, '2026-04-08', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -80,6 +106,14 @@ INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, 
 --
 
 --
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`comment_id`),
+  ADD KEY `fk_comment_author_user_id` (`author`) USING BTREE,
+  ADD KEY `fk_comment_post_id` (`post_id`) USING BTREE;
+
+--
 -- Indexes for table `post`
 --
 ALTER TABLE `post`
@@ -97,6 +131,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `comment_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
@@ -111,6 +151,13 @@ ALTER TABLE `user`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `fk_comment_author_user_id` FOREIGN KEY (`author`) REFERENCES `user` (`user_id`),
+  ADD CONSTRAINT `fk_comment_post_id` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`);
 
 --
 -- Constraints for table `post`
