@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2026 at 05:50 PM
+-- Generation Time: Apr 20, 2026 at 03:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,18 +33,18 @@ CREATE TABLE `post` (
   `content` text NOT NULL,
   `author` int(255) NOT NULL,
   `date` date NOT NULL,
-  `likes` int(255) NOT NULL
+  `likes` int(255) NOT NULL,
+  `hidden` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `post`
 --
 
-INSERT INTO `post` (`post_id`, `title`, `content`, `author`, `date`, `likes`) VALUES
-(1, 'Test post', 'Testposttestposttestpost', 1, '2026-04-07', 32),
-(2, 'the problem child', 'noone', 1, '2026-04-22', 3),
-(3, 'test_post title', 'test_post content', 3, '2026-04-08', 69),
-(9, 'Test insert', 'Test', 1, '2026-04-08', 0);
+INSERT INTO `post` (`post_id`, `title`, `content`, `author`, `date`, `likes`, `hidden`) VALUES
+(1, 'Test post', 'Testposttestposttestpost', 1, '2026-04-07', 32, 0),
+(2, 'the problem child', 'noone', 1, '2026-04-22', 3, 0),
+(9, 'Test insert', 'Test', 1, '2026-04-08', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -72,7 +72,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, `display_name`, `profile_picture`, `bio`, `private`) VALUES
 (1, 0, 'problem_child', '', '', '2026-03-11', 'problemchild problemchild problemchild problemchild', 'problem_child.png', 'problemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchild', 0),
 (2, 1, 'missing_bio', '', '', '2026-04-08', 'missing bio', '', '', 0),
-(3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'test_username.png', 'Test user bio', 0);
+(3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'test_username.png', 'Test user bio', 0),
+(4, 0, 'test_insert_user', 'test@example.org', '$argon2id$v=19$m=65536,t=3,p=4$mCMdracRX6gRLKgb02Nd2w$wcLnmIIZo/ecFsCrJ+ELxaAgjy8eVR+q5rI7Wb9E/H8', '2026-04-16', 'test_insert_user', 'problem_child.png', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -105,7 +106,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
