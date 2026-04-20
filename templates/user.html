@@ -8,12 +8,12 @@
 </div>
 {% if posts|length > 0 %}
     {% for post in posts %}
-    <div class="post">
+    <div class="block">
         <h3><a href="/posts/{{post[0]}}">{{post[1]}}</a></h3>
         {{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a>
     </div>
     {% endfor %}
 {% else %}
-    <div class="post noposts"><h4>This user has no posts!</h4></div>
+    <div class="block centered"><h4>This user has no posts!</h4></div>
 {% endif %}
 {% endblock %}

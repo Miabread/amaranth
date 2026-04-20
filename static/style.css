@@ -44,15 +44,15 @@ p { margin: 1rem; }
     object-fit: cover;
 }
 
-.post {
+.block {
     background-color: lightgray;
     width: 50%;
     margin: 1rem auto;
     padding: 1rem;
 }
-.post h3 {
+.block h3 {
     margin-top: 0;
     margin-bottom: 0.25rem;
 }
 
-.post.noposts { text-align: center; }
+.centered { text-align: center; }
