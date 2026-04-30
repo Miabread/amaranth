@@ -5,6 +5,9 @@
     <h2>{{ displayname }}</h2>
     <img src="/static/profile-pictures/{{ profile_picture }}">
     <p>{{ bio }}</p>
+    {% if session.username == username %}
+        <a href="/edit_profile/{{username}}">Edit profile</a>
+    {% endif %}
 </div>
 {% if posts|length > 0 %}
     {% for post in posts %}
