@@ -4,10 +4,16 @@ import mysql.connector
 from datetime import date
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from werkzeug.utils import secure_filename
+import os
+
+UPLOAD_FOLDER = './static/profile-pictures'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 
 app = Flask(__name__)
 app.secret_key = "a"
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Things under /static are served directly without needing anything here
@@ -78,12 +84,22 @@ def edit_profile(username):
     if request.method == 'POST':
         display_name = request.form.get('display_name', '').strip() or user['display_name']
         bio = request.form.get('bio', '').strip() or user['bio']
+        pfp = request.files['pfp']
         pw = request.form.get('password', '')
         pw2 = request.form.get('password2', '')
 
         if len(display_name) < 3:
             flash("Display name must be at least 3 characters", "error")
             return redirect(url_for('edit_profile', username=username))
+
+        if pfp.filename != '':
+            filename = secure_filename(pfp.filename)
+            actual_filename = username + pfp.filename
+            pfp.save(os.path.join(app.config['UPLOAD_FOLDER'], actual_filename))
+            cursor.execute(
+                "UPDATE user SET profile_picture=%s WHERE username=%s",
+                (actual_filename, username)
+            )
 
         if pw:
             if pw != pw2:

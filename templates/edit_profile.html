@@ -3,12 +3,15 @@
 {% block body %}
 <p>Welcome to Amaranth!</p>
 
-<form method="post" action="{{ url_for('edit_profile', username=username) }}">
+<form method="post" action="{{ url_for('edit_profile', username=username) }}" enctype="multipart/form-data">
     <label>Display Name</label><br>
     <input name="display_name" type="text" value="{{ user.display_name }}" /><br>
 
     <label>Bio</label><br>
     <textarea name="bio" rows="4" cols="50" placeholder="Bio">{{ user.bio }}</textarea><br>
+
+    <label>Profile picture</label><br>
+    <input name="pfp" type="file" accept="image/png, image/jpeg" /><br>
 
     <label>Password</label><br>
     <input name="password" type="password" placeholder="New password (optional)" /><br>
