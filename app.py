@@ -199,7 +199,7 @@ def welcome(username):
     if not user:
         return render_template("notfound.html", type="User", username=username)
 
-    return render_template("user.html", username=username, displayname=user["displayname"], bio=user["bio"], profile_picture=user["profile_picture"], posts=user["posts"])
+    return render_template("user.html", username=username, displayname=user["display_name"], bio=user["bio"], profile_picture=user["profile_picture"], posts=user["posts"])
 
 @app.route("/admin/<name>")
 def admin_view(name):
