@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<a href="/posts/new">Create New Post</a>
+{% if session.username %}
+    <a href="/posts/new">Create New Post</a>
+{% endif %}
 <ul>
 {% for post in posts %}
     <li><a href="/posts/{{post[0]}}">{{post[1]}}</a> <br> {{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></li>
