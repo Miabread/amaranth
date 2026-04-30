@@ -71,9 +71,9 @@ def render_base():
 def edit_profile(username):
     user = get_user(username)
 
-    if not user:
-        flash("User not found", "error")
-        return redirect(url_for('index'))
+    # If we aren't signed in as the user we're trying to edit then redirect to the homepage
+    if not session.get("username") == username:
+        return redirect("/")
 
     if request.method == 'POST':
         display_name = request.form.get('display_name', '').strip() or user['display_name']
