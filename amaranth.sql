@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 20, 2026 at 05:04 PM
+-- Generation Time: Apr 30, 2026 at 09:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,7 +45,8 @@ INSERT INTO `comment` (`comment_id`, `post_id`, `content`, `author`, `date`, `li
 (2, 2, '<h1>This shouldn\'t work</h1>\r\nStupid problem child.', 1, '2026-04-02', 2),
 (3, 1, 'Another test comment', 2, '2026-04-09', 3),
 (4, 1, 'Another another test by test_username', 3, '2026-04-17', 999),
-(5, 2, 'Really long text really long text really long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long text', 1, '2026-04-01', 0);
+(5, 2, 'Really long text really long text really long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long textreally long text', 1, '2026-04-01', 0),
+(6, 1, 'test comment', 6, '2026-04-30', 0);
 
 -- --------------------------------------------------------
 
@@ -96,10 +97,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, `display_name`, `profile_picture`, `bio`, `private`) VALUES
-(1, 0, 'problem_child', '', '', '2026-03-11', 'problemchild problemchild problemchild problemchild', 'problem_child.png', 'problemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchildproblemchild problemchild problemchild problemchild', 0),
+(1, 0, 'problem_child', '', '', '2026-03-11', 'example display name', 'problem_child.png', 'this is my bio', 0),
 (2, 1, 'missing_bio', '', '', '2026-04-08', 'missing bio', '', '', 0),
 (3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'test_username.png', 'Test user bio', 0),
-(4, 0, 'test_insert_user', 'test@example.org', '$argon2id$v=19$m=65536,t=3,p=4$mCMdracRX6gRLKgb02Nd2w$wcLnmIIZo/ecFsCrJ+ELxaAgjy8eVR+q5rI7Wb9E/H8', '2026-04-16', 'test_insert_user', 'problem_child.png', '', 0);
+(4, 0, 'test_insert_user', 'test@example.org', '$argon2id$v=19$m=65536,t=3,p=4$mCMdracRX6gRLKgb02Nd2w$wcLnmIIZo/ecFsCrJ+ELxaAgjy8eVR+q5rI7Wb9E/H8', '2026-04-16', 'test_insert_user', 'problem_child.png', '', 0),
+(5, 0, 'quinn', 'quinn@example.org', '$argon2id$v=19$m=65536,t=3,p=4$XgrittCsZ9hap5nzKH5Utg$N2TqFGFm9NTkqYN4C5j5de5aDhqnH4qHjQYJeLXhGA0', '2026-04-30', 'quinn', 'quinnScreenshot_20260425_185940.png', '', 0),
+(6, 1, 'admin', 'admin@example.org', '$argon2id$v=19$m=65536,t=3,p=4$X1Ozpe7ScS20YaQrbak9hQ$/fJaEo1x0vd7Ar6ZLCJ1dPLhXchbA6fubqa1hMplCRM', '2026-04-30', 'admin', 'problem_child.png', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -134,7 +137,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `comment_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `comment_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `post`
@@ -146,7 +149,7 @@ ALTER TABLE `post`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
