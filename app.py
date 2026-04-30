@@ -22,19 +22,99 @@ mydb = mysql.connector.connect(
 )
 cursor = mydb.cursor()
 
+def get_user(username):
+    user = {}
+
+    # SQL query to select the display name and bio from a user
+    query = "SELECT display_name,bio,profile_picture,email FROM user WHERE username = %s"
+
+    # Execute SQL command using the username to replace %s
+    # not sure why the replacement has to be a tuple, but it does
+    cursor.execute(query, (username, ))
+
+    # This can be accessed like an array
+    dbresult = cursor.fetchone()
+
+    # If cursor.rowcount is 0 then the result doesn't exist'
+    if not cursor.rowcount:
+        return None
+
+    # If there's no profile picture set then change it to use the placeholder one
+    user["profile_picture"] = dbresult[2]
+
+    if not user["profile_picture"]:
+        user["profile_picture"] = "no_profile_picture_set.png"
+
+    # Select everything from all posts and the usernames of those posts
+    # If a user doesn't exist it should be NULL
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE user.username = %s"
+
+    # Execute SQL query
+    cursor.execute(query, (username, ))
+
+    # This can be accessed like an array
+    posts = cursor.fetchall()
+
+    user["display_name"] = dbresult[0]
+    user["bio"] = dbresult[1]
+    user["email"] = dbresult[3]
+    user["posts"] = posts
+
+    return user
+
 @app.route('/')
 def render_base():
     # This works relative to the templates folder by default
     return render_template("home.html")
 
-@app.route('/test-flash')
-def test_flash():
-    flash("Hello flash", "info")
-    return redirect(url_for('signup'))  # page that includes flashing template code
+@app.route("/edit_profile/<username>", methods=['GET', 'POST'])
+def edit_profile(username):
+    user = get_user(username)
+
+    if not user:
+        flash("User not found", "error")
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        display_name = request.form.get('display_name', '').strip() or user['display_name']
+        bio = request.form.get('bio', '').strip() or user['bio']
+        pw = request.form.get('password', '')
+        pw2 = request.form.get('password2', '')
+
+        if len(display_name) < 3:
+            flash("Display name must be at least 3 characters", "error")
+            return redirect(url_for('edit_profile', username=username))
+
+        if pw:
+            if pw != pw2:
+                flash("Passwords do not match", "error")
+                return redirect(url_for('edit_profile', username=username))
+
+            if len(pw) < 8:
+                flash("Password must be at least 8 characters", "error")
+                return redirect(url_for('edit_profile', username=username))
+
+            hashed = PasswordHasher().hash(pw)
+
+            cursor.execute(
+                "UPDATE user SET display_name=%s, bio=%s, password=%s WHERE username=%s",
+                (display_name, bio, hashed, username)
+            )
+        else:
+            cursor.execute(
+                "UPDATE user SET display_name=%s, bio=%s WHERE username=%s",
+                (display_name, bio, username)
+            )
+
+        mydb.commit()
+        flash("Profile edited", "success")
+        return redirect(url_for('edit_profile', username=username))
+
+    return render_template("edit_profile.html", username=username, user=user)
 
 
-@app.route("/signup", methods=['GET', 'POST'])
-def signup():
+@app.route("/register", methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         username = request.form.get('username', '').strip().lower()
         email = request.form.get('email', '').strip().lower()
@@ -43,31 +123,31 @@ def signup():
 
         if not (username and email and pw and pw2):
             flash("All fields required", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         elif len(username) < 3:
             flash("Username must be at least 3 characters", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         elif pw != pw2:
             flash("Passwords do not match", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         elif len(pw) < 8:
             flash("Password must be at least 8 characters", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         hashed = PasswordHasher().hash(pw)
 
         cursor.execute("SELECT user_id FROM user WHERE username=%s", [username])
         if cursor.fetchone():
             flash("Username is taken", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         cursor.execute("SELECT user_id FROM user WHERE email=%s", [email])
         if cursor.fetchone():
             flash("Email already registered", "error")
-            return redirect('/signup')
+            return redirect('/register')
 
         cursor.execute(
             "INSERT INTO user (type, username, email, password, date, display_name, profile_picture, bio, private) VALUES (0, %s, %s, %s, NOW(), %s, 'problem_child.png', '', 0)",
@@ -77,7 +157,7 @@ def signup():
         flash("Account created", "success")
         return redirect('/login')
 
-    return render_template("signup.html")
+    return render_template("register.html")
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -114,36 +194,12 @@ def forgot_password():
 
 @app.route("/user/<username>")
 def welcome(username):
-    # SQL query to select the display name and bio from a user
-    query = "SELECT display_name,bio,profile_picture FROM user WHERE username = %s"
+    user = get_user(username)
 
-    # Execute SQL command using the username to replace %s
-    # not sure why the replacement has to be a tuple, but it does
-    cursor.execute(query, (username, ))
+    if not user:
+        return render_template("notfound.html", type="User", username=username)
 
-    # This can be accessed like an array
-    dbresult = cursor.fetchone()
-
-    # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
-    if cursor.rowcount < 1:
-        return render_template("notfound.html", type="User", data=username)
-
-    # If there's no profile picture set then change it to use the placeholder one
-    profile_picture = dbresult[2]
-
-    # Select everything from all posts and the usernames of those posts
-    # If a user doesn't exist it should be NULL
-    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE user.username = %s"
-
-    # Execute SQL query
-    cursor.execute(query, (username, ))
-
-    # This can be accessed like an array
-    posts = cursor.fetchall()
-    if not profile_picture:
-        profile_picture = "no_profile_picture_set.png"
-
-    return render_template("user.html", username=username, displayname=dbresult[0], bio=dbresult[1], profile_picture=profile_picture, posts=posts)
+    return render_template("user.html", username=username, displayname=user["displayname"], bio=user["bio"], profile_picture=user["profile_picture"], posts=user["posts"])
 
 @app.route("/admin/<name>")
 def admin_view(name):
