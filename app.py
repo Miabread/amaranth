@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, flash
+from flask import Flask, render_template, request, redirect, url_for, abort, flash, session
 import random
 import mysql.connector
 from datetime import date
@@ -177,7 +177,8 @@ def login():
         try:
             if PasswordHasher().verify(data[2], pw):
                 flash("Successfully logged in", "success")
-                return redirect(f'/user/{data[1]}')
+                session["username"] = data[1]
+                return redirect("/user/" + data[1])
         except VerifyMismatchError:
             flash("Email or password is incorrect", "error")
             return redirect('/login')
@@ -187,6 +188,11 @@ def login():
             return redirect('/login')
 
     return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session["username"] = None
+    return redirect("/")
 
 @app.route("/forgot_password")
 def forgot_password():
