@@ -32,7 +32,7 @@ def get_user(username):
     user = {}
 
     # SQL query to select the display name and bio from a user
-    query = "SELECT display_name,bio,profile_picture,email FROM user WHERE username = %s"
+    query = "SELECT display_name,bio,profile_picture,email,type FROM user WHERE username = %s"
 
     # Execute SQL command using the username to replace %s
     # not sure why the replacement has to be a tuple, but it does
@@ -65,8 +65,24 @@ def get_user(username):
     user["bio"] = dbresult[1]
     user["email"] = dbresult[3]
     user["posts"] = posts
+    user["type"] = dbresult[4]
 
     return user
+
+def admin():
+    # If we aren't signed in then return 0
+    if not session.get("username"):
+        return 0
+
+    user = get_user(session.get("username"))
+
+    # If we aren't an admin then return 0
+    print(user["type"])
+    if not user["type"]:
+        return 0
+
+    # Otherwise we are an admin, return 1
+    return 1
 
 @app.route('/')
 def render_base():
@@ -299,6 +315,10 @@ def posts_new_form():
 
 @app.route("/admin/posts/")
 def admin_posts(): 
+    # If we aren't admin then redirect to the homepage
+    if not admin():
+        return redirect("/")
+
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
     # Don't show hidden posts
@@ -314,6 +334,10 @@ def admin_posts():
 
 @app.route("/admin/posts/<post_id>")
 def admin_posts_id(post_id):
+    # If we aren't admin then redirect to the homepage
+    if not admin():
+        return redirect("/")
+
     # Select everything from the post id and the username who created it
     # If a user doesn't exist it should be NULL
     query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post_id = %s"
@@ -332,6 +356,10 @@ def admin_posts_id(post_id):
 
 @app.post("/admin/posts/<post_id>/delete")
 def admin_posts_id_delete(post_id):
+    # If we aren't admin then redirect to the homepage
+    if not admin():
+        return redirect("/")
+
     query = "DELETE FROM post WHERE post_id = %s"
 
     # Execute SQL delete
@@ -345,6 +373,10 @@ def admin_posts_id_delete(post_id):
 
 @app.post("/admin/posts/<post_id>/hidden")
 def admin_posts_id_hidden(post_id):
+    # If we aren't admin then redirect to the homepage
+    if not admin():
+        return redirect("/")
+
     # This inverts the value of hidden, toggling it
     query = "UPDATE post SET hidden = NOT hidden WHERE post_id = %s"
 
