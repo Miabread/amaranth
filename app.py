@@ -32,7 +32,7 @@ def get_user(username):
     user = {}
 
     # SQL query to select the display name and bio from a user
-    query = "SELECT display_name,bio,profile_picture,email,type FROM user WHERE username = %s"
+    query = "SELECT display_name,bio,profile_picture,email,type,user_id FROM user WHERE username = %s"
 
     # Execute SQL command using the username to replace %s
     # not sure why the replacement has to be a tuple, but it does
@@ -66,6 +66,7 @@ def get_user(username):
     user["email"] = dbresult[3]
     user["posts"] = posts
     user["type"] = dbresult[4]
+    user["id"] = dbresult[5]
 
     return user
 
@@ -77,7 +78,6 @@ def admin():
     user = get_user(session.get("username"))
 
     # If we aren't an admin then return 0
-    print(user["type"])
     if not user["type"]:
         return 0
 
@@ -258,8 +258,23 @@ def posts():
 
     return render_template("posts.html", posts = dbresult)
 
-@app.route("/posts/<post_id>")
+@app.route("/posts/<post_id>", methods=['GET', 'POST'])
 def posts_id(post_id):
+    if request.method == 'POST':
+        user = get_user(session.get("username"))
+
+        comment = request.form.get('comment', '').strip()
+        print(comment)
+
+        cursor.execute(
+            "INSERT INTO comment (post_id, content, author, date, likes) VALUES (%s, %s, %s, %s, 0)",
+            (post_id, comment, user["id"], date.today())
+        )
+
+        mydb.commit()
+
+        return redirect("/posts/" + post_id)
+
     # Select everything from the post id and the username who created it
     # If a user doesn't exist it should be NULL
     query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post_id = %s"

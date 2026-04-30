@@ -4,6 +4,14 @@
 <h1>{{post[1]}}</h1>
 <h3>{{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></h3>
 <p>{{post.content}}</p>
+{% if session.username %}
+    <form method="post">
+        <label>Add a comment</label><br>
+        <textarea name="comment" rows="4" cols="50" placeholder="Add a comment"></textarea><br>
+
+        <button type="submit">Edit</button>
+    </form>
+{% endif %}
 {% if comments|length > 0 %}
     {% for comment in comments %}
     <div class="block">
