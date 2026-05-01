@@ -85,6 +85,14 @@ def admin():
     # Otherwise we are an admin, return 1
     return 1
 
+def signed_in():
+    # If we aren't signed in then return 0
+    if not session.get("username"):
+        return 0
+
+    # Otherwise return 1
+    return 1
+
 @app.route('/')
 def render_base():
     # This works relative to the templates folder by default
@@ -312,6 +320,56 @@ def posts_id(post_id):
     comments = cursor.fetchall()
 
     return render_template("posts_id.html", post = post, comments = comments)
+
+@app.get("/posts/<post_id>/like")
+def posts_id_like(post_id):
+    if not signed_in():
+        return render_template('denied.html', message="You must be signed in to like posts."), 403
+
+    user = get_user(session.get("username"))
+
+    cursor.execute(
+        "SELECT * FROM post_like WHERE post_id=%s AND liker_id=%s",
+        [post_id, user["id"]]
+    )
+    if cursor.fetchone():
+        return render_template('denied.html', message="You already liked this post!"), 403
+
+    cursor.execute(
+        "INSERT INTO post_like (post_id, liker_id) VALUES (%s, %s)",
+        [post_id, user["id"]]
+    )
+    cursor.execute(
+        "UPDATE post SET likes = likes + 1 WHERE post_id=%s",
+        [post_id]
+    )
+
+    return redirect("/posts/" + post_id)
+
+@app.get("/posts/<post_id>/<comment_id>/like")
+def posts_id_comment_id_like(post_id, comment_id):
+    if not signed_in():
+        return render_template('denied.html', message="You must be signed in to like comments."), 403
+
+    user = get_user(session.get("username"))
+
+    cursor.execute(
+        "SELECT * FROM comment_like WHERE post_id=%s AND comment_id=%s AND liker_id=%s",
+        [post_id, comment_id, user["id"]]
+    )
+    if cursor.fetchone():
+        return render_template('denied.html', message="You already liked this comment!"), 403
+
+    cursor.execute(
+        "INSERT INTO comment_like (post_id, comment_id, liker_id) VALUES (%s, %s, %s)",
+        [post_id, comment_id, user["id"]]
+    )
+    cursor.execute(
+        "UPDATE comment SET likes = likes + 1 WHERE post_id=%s AND comment_id=%s",
+        [post_id, comment_id]
+    )
+
+    return redirect("/posts/" + post_id)
 
 @app.get("/posts/new")
 def posts_new_page():

@@ -5,6 +5,7 @@
 <h3>{{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></h3>
 <p>{{post.content}}</p>
 {% if session.username %}
+    <a href="/posts/{{post[0]}}/like">Like post</p>
     <form method="post">
         <label>Add a comment</label><br>
         <textarea name="comment" rows="4" cols="50" placeholder="Add a comment"></textarea><br>
@@ -15,7 +16,7 @@
 {% if comments|length > 0 %}
     {% for comment in comments %}
     <div class="block">
-        <p><a href="/user/{{comment[6]}}">@{{comment[6]}}</a> - {{comment[5]}} likes - commented {{comment[4]}}</p>
+        <p><a href="/user/{{comment[6]}}">@{{comment[6]}}</a> - {{comment[5]}} likes ({% if session.username %}<a href="/posts/{{post[0]}}/{{comment[0]}}/like">like</a>{% endif %}) - commented {{comment[4]}}</p>
         <p>{{comment[2]}}</p>
     </div>
     {% endfor %}

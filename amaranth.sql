@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 01, 2026 at 05:08 PM
+-- Generation Time: May 01, 2026 at 05:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,6 +51,19 @@ INSERT INTO `comment` (`comment_id`, `post_id`, `content`, `author`, `date`, `li
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `comment_like`
+--
+
+CREATE TABLE `comment_like` (
+  `comment_like_id` int(255) NOT NULL,
+  `comment_id` int(255) NOT NULL,
+  `liker_id` int(255) NOT NULL,
+  `post_id` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `post`
 --
 
@@ -72,6 +85,18 @@ INSERT INTO `post` (`post_id`, `title`, `content`, `author`, `date`, `likes`, `h
 (1, 'Test post', 'Testposttestposttestpost', 1, '2026-04-07', 32, 0),
 (2, 'the problem child', 'noone', 1, '2026-04-22', 3, 0),
 (9, 'Test insert', 'Test', 1, '2026-04-08', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_like`
+--
+
+CREATE TABLE `post_like` (
+  `post_like_id` int(255) NOT NULL,
+  `post_id` int(255) NOT NULL,
+  `liker_id` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -117,11 +142,27 @@ ALTER TABLE `comment`
   ADD KEY `fk_comment_post_id` (`post_id`) USING BTREE;
 
 --
+-- Indexes for table `comment_like`
+--
+ALTER TABLE `comment_like`
+  ADD PRIMARY KEY (`comment_like_id`),
+  ADD KEY `fk_comment_id` (`comment_id`),
+  ADD KEY `fk_liker_id` (`liker_id`);
+
+--
 -- Indexes for table `post`
 --
 ALTER TABLE `post`
   ADD PRIMARY KEY (`post_id`),
   ADD KEY `fk_post_author_user_id` (`author`);
+
+--
+-- Indexes for table `post_like`
+--
+ALTER TABLE `post_like`
+  ADD PRIMARY KEY (`post_like_id`),
+  ADD KEY `fk_post_id` (`post_id`),
+  ADD KEY `fk_liker_user_id` (`liker_id`);
 
 --
 -- Indexes for table `user`
@@ -140,10 +181,22 @@ ALTER TABLE `comment`
   MODIFY `comment_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `comment_like`
+--
+ALTER TABLE `comment_like`
+  MODIFY `comment_like_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
   MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `post_like`
+--
+ALTER TABLE `post_like`
+  MODIFY `post_like_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -163,10 +216,24 @@ ALTER TABLE `comment`
   ADD CONSTRAINT `fk_comment_post_id` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`);
 
 --
+-- Constraints for table `comment_like`
+--
+ALTER TABLE `comment_like`
+  ADD CONSTRAINT `fk_comment_id` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
+  ADD CONSTRAINT `fk_liker_id` FOREIGN KEY (`liker_id`) REFERENCES `user` (`user_id`);
+
+--
 -- Constraints for table `post`
 --
 ALTER TABLE `post`
   ADD CONSTRAINT `fk_post_author_user_id` FOREIGN KEY (`author`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `post_like`
+--
+ALTER TABLE `post_like`
+  ADD CONSTRAINT `fk_liker_user_id` FOREIGN KEY (`liker_id`) REFERENCES `user` (`user_id`),
+  ADD CONSTRAINT `fk_post_id` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
