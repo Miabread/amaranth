@@ -238,6 +238,10 @@ def welcome(username):
     if not user:
         return render_template("notfound.html", type="User", username=username)
 
+    # If the profile is private then deny, unless we're that user, or if we're an admin
+    if user["private"] and session.get("username") != username and not admin():
+        return render_template('denied.html', message="This user's profile is private."), 403
+
     return render_template("user.html", username=username, displayname=user["display_name"], bio=user["bio"], profile_picture=user["profile_picture"], posts=user["posts"])
 
 @app.route("/admin/<name>")
