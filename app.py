@@ -32,7 +32,7 @@ def get_user(username):
     user = {}
 
     # SQL query to select the display name and bio from a user
-    query = "SELECT display_name,bio,profile_picture,email,type,user_id FROM user WHERE username = %s"
+    query = "SELECT display_name,bio,profile_picture,email,type,user_id,private FROM user WHERE username = %s"
 
     # Execute SQL command using the username to replace %s
     # not sure why the replacement has to be a tuple, but it does
@@ -67,6 +67,7 @@ def get_user(username):
     user["posts"] = posts
     user["type"] = dbresult[4]
     user["id"] = dbresult[5]
+    user["private"] = dbresult[6]
 
     return user
 
@@ -332,7 +333,7 @@ def posts_new_form():
 def admin_posts(): 
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html'), 403
+        return render_template('denied.html', message="You must be admin to access this page."), 403
 
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
@@ -351,7 +352,7 @@ def admin_posts():
 def admin_posts_id(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html'), 403
+        return render_template('denied.html', message="You must be admin to access this page."), 403
 
     # Select everything from the post id and the username who created it
     # If a user doesn't exist it should be NULL
@@ -373,7 +374,7 @@ def admin_posts_id(post_id):
 def admin_posts_id_delete(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html'), 403
+        return render_template('denied.html', message="You must be admin to access this page."), 403
 
     query = "DELETE FROM post WHERE post_id = %s"
 
@@ -390,7 +391,7 @@ def admin_posts_id_delete(post_id):
 def admin_posts_id_hidden(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html'), 403
+        return render_template('denied.html', message="You must be admin to access this page."), 403
 
     # This inverts the value of hidden, toggling it
     query = "UPDATE post SET hidden = NOT hidden WHERE post_id = %s"
