@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 30, 2026 at 09:11 PM
+-- Generation Time: May 01, 2026 at 05:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -101,8 +101,8 @@ INSERT INTO `user` (`user_id`, `type`, `username`, `email`, `password`, `date`, 
 (2, 1, 'missing_bio', '', '', '2026-04-08', 'missing bio', '', '', 0),
 (3, 0, 'test_username', 'test@user.com', '', '2026-04-22', 'Test user displayname', 'test_username.png', 'Test user bio', 0),
 (4, 0, 'test_insert_user', 'test@example.org', '$argon2id$v=19$m=65536,t=3,p=4$mCMdracRX6gRLKgb02Nd2w$wcLnmIIZo/ecFsCrJ+ELxaAgjy8eVR+q5rI7Wb9E/H8', '2026-04-16', 'test_insert_user', 'problem_child.png', '', 0),
-(5, 0, 'quinn', 'quinn@example.org', '$argon2id$v=19$m=65536,t=3,p=4$XgrittCsZ9hap5nzKH5Utg$N2TqFGFm9NTkqYN4C5j5de5aDhqnH4qHjQYJeLXhGA0', '2026-04-30', 'quinn', 'quinnScreenshot_20260425_185940.png', '', 0),
-(6, 1, 'admin', 'admin@example.org', '$argon2id$v=19$m=65536,t=3,p=4$X1Ozpe7ScS20YaQrbak9hQ$/fJaEo1x0vd7Ar6ZLCJ1dPLhXchbA6fubqa1hMplCRM', '2026-04-30', 'admin', 'problem_child.png', '', 0);
+(5, 0, 'quinn', 'quinn@example.org', '$argon2id$v=19$m=65536,t=3,p=4$XgrittCsZ9hap5nzKH5Utg$N2TqFGFm9NTkqYN4C5j5de5aDhqnH4qHjQYJeLXhGA0', '2026-04-30', 'quinn', 'quinnScreenshot_20260425_185940.png', '', 1),
+(6, 1, 'admin', 'admin@example.org', '$argon2id$v=19$m=65536,t=3,p=4$X1Ozpe7ScS20YaQrbak9hQ$/fJaEo1x0vd7Ar6ZLCJ1dPLhXchbA6fubqa1hMplCRM', '2026-04-30', 'admin', 'problem_child.png', '', 1);
 
 --
 -- Indexes for dumped tables
