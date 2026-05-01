@@ -330,9 +330,9 @@ def posts_new_form():
 
 @app.route("/admin/posts/")
 def admin_posts(): 
-    # If we aren't admin then redirect to the homepage
+    # If we aren't admin then give 403
     if not admin():
-        return redirect("/")
+        return render_template('denied.html'), 403
 
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
@@ -349,9 +349,9 @@ def admin_posts():
 
 @app.route("/admin/posts/<post_id>")
 def admin_posts_id(post_id):
-    # If we aren't admin then redirect to the homepage
+    # If we aren't admin then give 403
     if not admin():
-        return redirect("/")
+        return render_template('denied.html'), 403
 
     # Select everything from the post id and the username who created it
     # If a user doesn't exist it should be NULL
@@ -371,9 +371,9 @@ def admin_posts_id(post_id):
 
 @app.post("/admin/posts/<post_id>/delete")
 def admin_posts_id_delete(post_id):
-    # If we aren't admin then redirect to the homepage
+    # If we aren't admin then give 403
     if not admin():
-        return redirect("/")
+        return render_template('denied.html'), 403
 
     query = "DELETE FROM post WHERE post_id = %s"
 
@@ -388,9 +388,9 @@ def admin_posts_id_delete(post_id):
 
 @app.post("/admin/posts/<post_id>/hidden")
 def admin_posts_id_hidden(post_id):
-    # If we aren't admin then redirect to the homepage
+    # If we aren't admin then give 403
     if not admin():
-        return redirect("/")
+        return render_template('denied.html'), 403
 
     # This inverts the value of hidden, toggling it
     query = "UPDATE post SET hidden = NOT hidden WHERE post_id = %s"
