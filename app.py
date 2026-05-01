@@ -121,10 +121,8 @@ def edit_profile(username):
 
         # This is a checkbox so if it isn't checked it doesn't send anything, meaning we have to setup our own 0
         if private:
-            print("yes")
             private_value = 1
         else:
-            print("no")
             private_value = 0
 
         if pw:
