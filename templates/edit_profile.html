@@ -13,6 +13,9 @@
     <label>Profile picture</label><br>
     <input name="pfp" type="file" accept="image/png, image/jpeg" /><br>
 
+    <label>Private</label><br>
+    <input name="private" type="checkbox" {% if user.private %}checked{% endif %}><br>
+
     <label>Password</label><br>
     <input name="password" type="password" placeholder="New password (optional)" /><br>
 

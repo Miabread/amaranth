@@ -102,6 +102,7 @@ def edit_profile(username):
         display_name = request.form.get('display_name', '').strip() or user['display_name']
         bio = request.form.get('bio', '').strip() or user['bio']
         pfp = request.files['pfp']
+        private = request.form.get('private', '')
         pw = request.form.get('password', '')
         pw2 = request.form.get('password2', '')
 
@@ -118,6 +119,14 @@ def edit_profile(username):
                 (actual_filename, username)
             )
 
+        # This is a checkbox so if it isn't checked it doesn't send anything, meaning we have to setup our own 0
+        if private:
+            print("yes")
+            private_value = 1
+        else:
+            print("no")
+            private_value = 0
+
         if pw:
             if pw != pw2:
                 flash("Passwords do not match", "error")
@@ -130,13 +139,13 @@ def edit_profile(username):
             hashed = PasswordHasher().hash(pw)
 
             cursor.execute(
-                "UPDATE user SET display_name=%s, bio=%s, password=%s WHERE username=%s",
-                (display_name, bio, hashed, username)
+                "UPDATE user SET display_name=%s, bio=%s, private=%s, password=%s WHERE username=%s",
+                (display_name, bio, private_value, hashed, username)
             )
         else:
             cursor.execute(
-                "UPDATE user SET display_name=%s, bio=%s WHERE username=%s",
-                (display_name, bio, username)
+                "UPDATE user SET display_name=%s, bio=%s, private=%s WHERE username=%s",
+                (display_name, bio, private_value, username)
             )
 
         mydb.commit()
