@@ -5,7 +5,14 @@
 <h3>{{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></h3>
 <p>{{post.content}}</p>
 {% if session.username %}
-    <a href="/posts/{{post[0]}}/like">Like post</p>
+    <a href="/posts/{{post[0]}}/like">Like post</a>
+    {% with messages = get_flashed_messages(category_filter=["likes"]) %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <form method="post">
         <label>Add a comment</label><br>
         <textarea name="comment" rows="4" cols="50" placeholder="Add a comment"></textarea><br>

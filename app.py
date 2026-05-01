@@ -333,7 +333,8 @@ def posts_id_like(post_id):
         [post_id, user["id"]]
     )
     if cursor.fetchone():
-        return render_template('denied.html', message="You already liked this post!"), 403
+        flash("You already liked this post!", "likes")
+        return redirect("/posts/" + post_id)
 
     cursor.execute(
         "INSERT INTO post_like (post_id, liker_id) VALUES (%s, %s)",
@@ -344,6 +345,9 @@ def posts_id_like(post_id):
         [post_id]
     )
 
+    mydb.commit()
+
+    flash("Post liked successfully!", "likes")
     return redirect("/posts/" + post_id)
 
 @app.get("/posts/<post_id>/<comment_id>/like")
@@ -358,7 +362,8 @@ def posts_id_comment_id_like(post_id, comment_id):
         [post_id, comment_id, user["id"]]
     )
     if cursor.fetchone():
-        return render_template('denied.html', message="You already liked this comment!"), 403
+        flash("You already liked this commment!", "likes")
+        return redirect("/posts/" + post_id)
 
     cursor.execute(
         "INSERT INTO comment_like (post_id, comment_id, liker_id) VALUES (%s, %s, %s)",
@@ -369,6 +374,9 @@ def posts_id_comment_id_like(post_id, comment_id):
         [post_id, comment_id]
     )
 
+    mydb.commit()
+
+    flash("Comment liked successfully!", "likes")
     return redirect("/posts/" + post_id)
 
 @app.get("/posts/new")
