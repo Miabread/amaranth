@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="profile-info">
-    <h2>{{ displayname }}</h2>
+<div class="block wide">
+    <h1>{{ displayname }}</h1>
     <img src="/static/profile-pictures/{{ profile_picture }}">
     <p>{{ bio }}</p>
     {% if session.username == username %}
-        <a href="/edit_profile/{{username}}">Edit profile</a>
+        <p><a href="/edit_profile/{{username}}">Edit profile</a></p>
     {% endif %}
 </div>
 {% if posts|length > 0 %}
     {% for post in posts %}
     <div class="block">
-        <h3><a href="/posts/{{post[0]}}">{{post[1]}}</a></h3>
-        {{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a>
+        <h2><a href="/posts/{{post[0]}}">{{post[1]}}</a></h2>
+        <p>Posted by <a href="/user/{{post[7]}}">@{{post[7]}}</a> on {{post[4].strftime("%B %-d, %Y")}}</p>
+        <p>{{post[5]}} likes</p>
     </div>
-    {% endfor %}
+{% endfor %}
 {% else %}
-    <div class="block centered"><h4>This user has no posts!</h4></div>
+    <div class="block"><h2>This user has no posts!</h2></div>
 {% endif %}
 {% endblock %}

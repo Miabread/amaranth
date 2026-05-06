@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<h1 class="centered">Posts</h1>
 {% if session.username %}
-    <a href="/posts/new">Create New Post</a>
+    <div class="block">
+        <h2><a href="/posts/new">Create New Post</a></h2>
+    </div>
 {% endif %}
-<ul>
 {% for post in posts %}
-    <li><a href="/posts/{{post[0]}}">{{post[1]}}</a> <br> {{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></li>
-    <br>
+    <div class="block">
+        <h2><a href="/posts/{{post[0]}}">{{post[1]}}</a></h2>
+        <p>Posted by <a href="/user/{{post[7]}}">@{{post[7]}}</a> on {{post[4].strftime("%B %-d, %Y")}}</p>
+        <p>{{post[5]}} likes</p>
+    </div>
 {% endfor %}
-</ul>
 {% endblock %}

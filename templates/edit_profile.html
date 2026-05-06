@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<p>Welcome to Amaranth!</p>
+<h1 class="centered">Edit profile for {{ username }}</h1>
 
-<form method="post" action="{{ url_for('edit_profile', username=username) }}" enctype="multipart/form-data">
-    <label>Display Name</label><br>
-    <input name="display_name" type="text" value="{{ user.display_name }}" /><br>
-
-    <label>Bio</label><br>
-    <textarea name="bio" rows="4" cols="50" placeholder="Bio">{{ user.bio }}</textarea><br>
-
-    <label>Profile picture</label><br>
-    <input name="pfp" type="file" accept="image/png, image/jpeg" /><br>
-
-    <label>Private</label><br>
-    <input name="private" type="checkbox" {% if user.private %}checked{% endif %}><br>
-
-    <label>Password</label><br>
-    <input name="password" type="password" placeholder="New password (optional)" /><br>
-
-    <label>Repeat Password</label><br>
-    <input name="password2" type="password" placeholder="Repeat password" /><br>
-
+<form class="block" method="post" action="{{ url_for('edit_profile', username=username) }}" enctype="multipart/form-data">
+    <label><h3>Display Name</h3></label>
+    <input class="wide" name="display_name" type="text" value="{{ user.display_name }}" />
+    <br>
+    <br>
+    <label><h3>Bio</h3></label>
+    <textarea name="bio" rows="4" cols="50" placeholder="Bio">{{ user.bio }}</textarea>
+    <br>
+    <br>
+    <label><h3>Profile picture</h3></label>
+    <input name="pfp" type="file" accept="image/png, image/jpeg">
+    <br>
+    <br>
+    <label><h3>Private</h3></label>
+    <input name="private" type="checkbox" {% if user.private %}checked{% endif %}>
+    <br>
+    <br>
+    <label><h3>Password</h3></label>
+    <input class="wide" name="password" type="password" placeholder="New password (optional)">
+    <br>
+    <br>
+    <label><h3>Repeat Password</h3></label>
+    <input class="wide" name="password2" type="password" placeholder="Repeat new password">
+    <br>
     <button type="submit">Edit</button>
 </form>
 

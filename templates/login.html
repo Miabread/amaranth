@@ -1,208 +1,28 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<style>
-  :root{
-    --amaranth: #9F2B68;
-    --bg: #f3f1f6;
-    --card: #ffffff;
-    --card-strong: #faf7fb;
-    --muted: #6b6b7a;
-    --text-strong: #0f0e13;
-    --shadow: 0 10px 30px rgba(31, 18, 35, 0.12);
-    --radius: 14px;
-    --input-border: #e7e5ef;
-  }
-
-  .amaranth-page {
-    min-height: 78vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(180deg, var(--bg), #efeaf4);
-    padding: 48px 16px;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color: var(--text-strong);
-  }
-
-  .amaranth-card {
-    width: 100%;
-    max-width: 540px;
-    background: linear-gradient(180deg, var(--card-strong), var(--card));
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 30px;
-    border: 1px solid rgba(15,14,19,0.06);
-  }
-
-  .amaranth-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-  .amaranth-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--amaranth), #7a1b48);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-    box-shadow: 0 8px 30px rgba(159,43,104,0.14);
-  }
-  .amaranth-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    color: var(--text-strong);
-  }
-  .amaranth-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 4px;
-    font-weight: 600;
-  }
-
-  form.amaranth-form {
-    display: grid;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  label.field-label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 6px;
-    color: #2b2a31;
-    font-weight: 700;
-  }
-
-  .field { display:flex; flex-direction:column; }
-
-  input[type="email"],
-  input[type="password"] {
-    height: 46px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--input-border);
-    background: #fff;
-    transition: box-shadow .12s ease, border-color .09s ease, transform .06s ease;
-    font-size: 15px;
-    outline: none;
-    color: #141217;
-  }
-
-  input::placeholder { color: #bdb9c6; font-size:14px; }
-
-  input:focus {
-    border-color: rgba(159,43,104,0.95);
-    box-shadow: 0 12px 30px rgba(159,43,104,0.08);
-    transform: translateY(-1px);
-  }
-
-  .small-row {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:6px;
-    gap:12px;
-  }
-  .small-link {
-    color: var(--amaranth);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 13px;
-  }
-
-  .actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  button.primary {
-    background: linear-gradient(90deg, var(--amaranth), #7a1b48);
-    color: #fff;
-    border: none;
-    padding: 11px 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 12px 30px rgba(159,43,104,0.14);
-    transition: transform .12s ease, box-shadow .12s ease;
-  }
-  button.primary:hover { transform: translateY(-2px); }
-
-  .ghost-link {
-    background: transparent;
-    border: 0;
-    color: var(--muted);
-    padding: 10px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .flashes { list-style:none; padding:0; margin:12px 0 0 0; display:grid; gap:8px; }
-  .flash { padding:10px 12px; border-radius:10px; font-size:14px; }
-  .flash.error { background:#ffecef; color:#7a142b; border:1px solid rgba(159,43,104,0.08); }
-  .flash.success { background:#effaf4; color:#115740; border:1px solid rgba(15,121,76,0.06); }
-
-  @media (max-width:440px) {
-    .amaranth-card { padding:18px; border-radius:12px; }
-    .amaranth-logo { width:40px; height:40px; font-size:16px; }
-  }
-</style>
-
-<div class="amaranth-page">
-  <section class="amaranth-card" aria-labelledby="amaranth-heading">
-    <header class="amaranth-header">
-      <div class="amaranth-logo" aria-hidden="true">A</div>
-      <div>
-        <div id="amaranth-heading" class="amaranth-title">Amaranth</div>
-      </div>
-    </header>
-
-    <form class="amaranth-form" method="post" action="/login" novalidate>
-      <div class="field">
-        <label class="field-label" for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="Email address" required />
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="Password" required />
-      </div>
-
-      <div class="small-row">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:600;">
-          <input type="checkbox" name="remember" style="width:16px;height:16px;border-radius:4px;border:1px solid var(--input-border)"/> Remember me
-        </label>
-        <a class="small-link" href="/reset-password">Forgot password?</a>
-      </div>
-
-      <div class="actions">
-        <button type="submit" class="primary">Sign in</button>
-        <a class="ghost-link" href="/register">Create account</a>
-      </div>
+<h1 class="centered">Login</h1>
+<div class="block">
+    <form method="post" action="/login">
+        <label for="email"><h3>Email</h3></label>
+        <input class="wide" id="email" name="email" type="email" placeholder="Email address" required>
+        <br>
+        <br>
+        <label for="password"><h3>Password</h3></label>
+        <input class="wide" id="password" name="password" type="password" placeholder="Password" required>
+        <br>
+        <button type="submit">Sign in</button>
     </form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <ul class="flashes" role="status" aria-live="polite">
-          {% for category, msg in messages %}
-            <li class="flash {{ category }}">{{ msg }}</li>
-          {% endfor %}
-        </ul>
+        {% for category, msg in messages %}
+          <p class="{{ category }}"><strong>{{ msg }}</strong></p>
+        {% endfor %}
       {% endif %}
     {% endwith %}
+    
+    <p>Don't have an account? <a href="/register">Click here to register</a>.</p>
   </section>
 </div>
 {% endblock %}

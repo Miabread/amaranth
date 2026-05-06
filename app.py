@@ -95,8 +95,7 @@ def signed_in():
 
 @app.route('/')
 def render_base():
-    # This works relative to the templates folder by default
-    return render_template("home.html")
+    return posts()
 
 @app.route("/edit_profile/<username>", methods=['GET', 'POST'])
 def edit_profile(username):
@@ -174,7 +173,7 @@ def register():
             return redirect('/register')
 
         elif len(username) < 3:
-            flash("Username must be at least 3 characters", "error")
+            flash("Username must be at least 3 characters long", "error")
             return redirect('/register')
 
         elif pw != pw2:
@@ -182,7 +181,7 @@ def register():
             return redirect('/register')
 
         elif len(pw) < 8:
-            flash("Password must be at least 8 characters", "error")
+            flash("Password must be at least 8 characters long", "error")
             return redirect('/register')
 
         hashed = PasswordHasher().hash(pw)
@@ -268,7 +267,8 @@ def posts():
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
     # Don't show hidden posts
-    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post.hidden = 0"
+    # Sort by newest first
+    query = "SELECT post.*,user.username FROM post LEFT JOIN user ON post.author = user.user_id WHERE post.hidden = 0 ORDER BY post.date DESC"
 
     # Execute SQL query
     cursor.execute(query)
@@ -284,7 +284,6 @@ def posts_id(post_id):
         user = get_user(session.get("username"))
 
         comment = request.form.get('comment', '').strip()
-        print(comment)
 
         cursor.execute(
             "INSERT INTO comment (post_id, content, author, date, likes) VALUES (%s, %s, %s, %s, 0)",
@@ -292,6 +291,8 @@ def posts_id(post_id):
         )
 
         mydb.commit()
+
+        flash("Commented successfully!", "commented_success")
 
         return redirect("/posts/" + post_id)
 
@@ -311,7 +312,8 @@ def posts_id(post_id):
 
     # Select all comments on this post
     # If a post doesn't exist it should be NULL
-    query = "SELECT comment.*,user.username FROM comment LEFT JOIN user ON comment.author = user.user_id WHERE post_id = %s"
+    # Order by number of likes, highest first
+    query = "SELECT comment.*,user.username FROM comment LEFT JOIN user ON comment.author = user.user_id WHERE post_id = %s ORDER BY comment.likes DESC"
 
     # Execute SQL query
     cursor.execute(query, (post_id, ))
@@ -333,7 +335,7 @@ def posts_id_like(post_id):
         [post_id, user["id"]]
     )
     if cursor.fetchone():
-        flash("You already liked this post!", "likes")
+        flash("You already liked this post!", "likes_error")
         return redirect("/posts/" + post_id)
 
     cursor.execute(
@@ -347,7 +349,7 @@ def posts_id_like(post_id):
 
     mydb.commit()
 
-    flash("Post liked successfully!", "likes")
+    flash("Post liked successfully!", "likes_success")
     return redirect("/posts/" + post_id)
 
 @app.get("/posts/<post_id>/<comment_id>/like")
@@ -362,7 +364,7 @@ def posts_id_comment_id_like(post_id, comment_id):
         [post_id, comment_id, user["id"]]
     )
     if cursor.fetchone():
-        flash("You already liked this commment!", "likes")
+        flash("You already liked that comment!", "likes_error")
         return redirect("/posts/" + post_id)
 
     cursor.execute(
@@ -376,7 +378,7 @@ def posts_id_comment_id_like(post_id, comment_id):
 
     mydb.commit()
 
-    flash("Comment liked successfully!", "likes")
+    flash("Comment liked successfully!", "likes_success")
     return redirect("/posts/" + post_id)
 
 @app.get("/posts/new")

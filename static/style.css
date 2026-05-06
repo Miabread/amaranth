@@ -10,49 +10,81 @@ body {
 
     /* Just to set something less ugly by default */
     font-family: sans-serif;
+    
+    background-color: #FEF7FF;
 }
 /* See notes above */
 main { flex-grow: 1; }
 
 header, footer {
-    background-color: gray;
+    background-color: #E6E0E9;
     display: inline-block;
     width: 100%;
 }
 header p, footer p {
     /* Stay on one line */
     display: inline-block;
+    
+    font-size: 18px;
 }
+header {
+    border-bottom: #1D1B20 solid 1px;
+    position: sticky;
+    top: 0;
+}
+footer { border-top: #1D1B20 solid 1px; }
 
 /* Default margin on all sides to get away from page sides */
 p { margin: 1rem; }
 
 .right { float: right; }
 
-.profile-info {
-    background-color: lightgray;
-    width: 50%;
-    margin: 1rem auto;
-    padding: 1rem;
-    text-align: center;
-}
-.profile-info img {
-    border: solid black 3px;
-    border-radius: 50%;
-    height: 8rem;
-    width: 8rem;
-    object-fit: cover;
-}
-
 .block {
-    background-color: lightgray;
-    width: 50%;
-    margin: 1rem auto;
+    width: 30%;
+    margin: 2rem auto;
     padding: 1rem;
+    box-shadow: #1D1B20A0 -2px 2px 14px;
+    text-align: center;
+    background-color: #F3EDF7;
+    border-radius: 0.5rem;
 }
 .block h3 {
     margin-top: 0;
     margin-bottom: 0.25rem;
 }
+.block img {
+    border: solid black 3px;
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    object-fit: cover;
+}
+.wide { width: 50%; }
 
 .centered { text-align: center; }
+
+.divisor p:last-of-type {
+    padding-top: 1rem;
+    border-top: #1D1B20 solid 1px;
+}
+
+.error { color: #B3261E; }
+.success { color: #197023; }
+
+
+textarea, input, button {
+    text-align: center;
+    background-color: #ECE6F0;
+    border: #1D1B20 solid 1px;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+button { margin: 1rem; margin-bottom: 0; }
+
+ul {
+    margin-top: 0;
+    padding-left: 0;
+    list-style-position: inside;
+}
+
+.list-text { margin-bottom: 0.5rem; }

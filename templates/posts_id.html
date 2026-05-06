@@ -1,29 +1,53 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<h1>{{post[1]}}</h1>
-<h3>{{post[5]}} likes, by <a href="/user/{{post[7]}}">@{{post[7]}}</a></h3>
-<p>{{post.content}}</p>
-{% if session.username %}
-    <a href="/posts/{{post[0]}}/like">Like post</a>
-    {% with messages = get_flashed_messages(category_filter=["likes"]) %}
+<div class="block wide divisor">
+    <h1>{{post[1]}}</h1>
+    <h3>Posted by <a href="/user/{{post[7]}}">@{{post[7]}}</a> on {{post[4].strftime("%B %-d, %Y")}}</h3>
+    <h3>{{post[5]}} likes</h3>
+    {% if session.username %}
+    <p><a href="/posts/{{post[0]}}/like">Like this post</a></p>
+    {% with messages = get_flashed_messages(category_filter=["likes_error"]) %}
         {% if messages %}
             {% for message in messages %}
-                <p>{{ message }}</p>
+                <p class="error"><strong>{{ message }}</strong></p>
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form method="post">
-        <label>Add a comment</label><br>
-        <textarea name="comment" rows="4" cols="50" placeholder="Add a comment"></textarea><br>
+    {% with messages = get_flashed_messages(category_filter=["likes_success"]) %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="success"><strong>{{ message }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% endif %}
+    <p>{{post[2]}}</p>
+</div>
+{% if session.username %}
+    <form class="block" method="post">
+        <label><p><b>Comment on this post</b></p></label>
+        {% with messages = get_flashed_messages(category_filter=["commented_success"]) %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="success"><strong>{{ message }}</strong></p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <textarea name="comment" rows="4" cols="50" placeholder="Add a comment" required></textarea><br>
 
-        <button type="submit">Edit</button>
+        <button type="submit">Post comment</button>
     </form>
 {% endif %}
 {% if comments|length > 0 %}
     {% for comment in comments %}
-    <div class="block">
-        <p><a href="/user/{{comment[6]}}">@{{comment[6]}}</a> - {{comment[5]}} likes {% if session.username %}(<a href="/posts/{{post[0]}}/{{comment[0]}}/like">like</a>){% endif %} - commented {{comment[4]}}</p>
+    <div class="block divisor">
+        <p><b>Commented by <a href="/user/{{comment[6]}}">@{{comment[6]}}</a> on {{comment[4].strftime("%B %-d, %Y")}}</b>
+        <br>
+        {{comment[5]}} likes</p>
+        {% if session.username %}
+        <p><a href="/posts/{{post[0]}}/{{comment[0]}}/like">Like this comment</a></p>
+        {% endif %}
         <p>{{comment[2]}}</p>
     </div>
     {% endfor %}
