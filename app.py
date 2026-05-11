@@ -103,7 +103,7 @@ def edit_profile(username):
 
     # If we aren't signed in as the user we're trying to edit then deny
     if not session.get("username") == username:
-        return render_template('denied.html', message="You can only edit your own profile."), 403
+        return render_template('error.html', message="You can only edit your own profile."), 403
 
     if request.method == 'POST':
         display_name = request.form.get('display_name', '').strip() or user['display_name']
@@ -250,11 +250,11 @@ def welcome(username):
     user = get_user(username)
 
     if not user:
-        return render_template("notfound.html", type="User", username=username)
+        return render_template("error.html", message='User "' + username + '" doesn\'t exist.'), 404
 
     # If the profile is private then deny, unless we're that user, or if we're an admin
     if user["private"] and session.get("username") != username and not admin():
-        return render_template('denied.html', message="This user's profile is private."), 403
+        return render_template('error.html', message=username + "'s profile is private."), 403
 
     return render_template("user.html", username=username, displayname=user["display_name"], bio=user["bio"], profile_picture=user["profile_picture"], posts=user["posts"])
 
@@ -308,7 +308,7 @@ def posts_id(post_id):
 
     # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
     if cursor.rowcount < 1:
-        return render_template("notfound.html", type="Post", data=post_id)
+        return render_template("error.html", message="Post " + post_id + " doesn't exist."), 404
 
     # Select all comments on this post
     # If a post doesn't exist it should be NULL
@@ -326,7 +326,7 @@ def posts_id(post_id):
 @app.get("/posts/<post_id>/like")
 def posts_id_like(post_id):
     if not signed_in():
-        return render_template('denied.html', message="You must be signed in to like posts."), 403
+        return render_template('error.html', message="You must be signed in to like posts."), 403
 
     user = get_user(session.get("username"))
 
@@ -355,7 +355,7 @@ def posts_id_like(post_id):
 @app.get("/posts/<post_id>/<comment_id>/like")
 def posts_id_comment_id_like(post_id, comment_id):
     if not signed_in():
-        return render_template('denied.html', message="You must be signed in to like comments."), 403
+        return render_template('error.html', message="You must be signed in to like comments."), 403
 
     user = get_user(session.get("username"))
 
@@ -412,7 +412,7 @@ def posts_new_form():
 def admin_posts(): 
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html', message="You must be admin to access this page."), 403
+        return render_template('error.html', message="You must be admin to access this page."), 403
 
     # Select everything from all posts and the usernames of those posts
     # If a user doesn't exist it should be NULL
@@ -431,7 +431,7 @@ def admin_posts():
 def admin_posts_id(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html', message="You must be admin to access this page."), 403
+        return render_template('error.html', message="You must be admin to access this page."), 403
 
     # Select everything from the post id and the username who created it
     # If a user doesn't exist it should be NULL
@@ -445,7 +445,7 @@ def admin_posts_id(post_id):
 
     # If cursor.rowcount is less than 1 then the result doesn't exist (this ended up -1 in testing so we can't just use not)
     if cursor.rowcount < 1:
-        return render_template("notfound.html", type="Post", data=post_id)
+        return render_template("error.html", message="Post " + post_id + " doesn't exist."), 404
     
     return render_template("admin_posts_id.html", post = dbresult)
 
@@ -453,7 +453,7 @@ def admin_posts_id(post_id):
 def admin_posts_id_delete(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html', message="You must be admin to access this page."), 403
+        return render_template('error.html', message="You must be admin to access this page."), 403
 
     query = "DELETE FROM post WHERE post_id = %s"
 
@@ -470,7 +470,7 @@ def admin_posts_id_delete(post_id):
 def admin_posts_id_hidden(post_id):
     # If we aren't admin then give 403
     if not admin():
-        return render_template('denied.html', message="You must be admin to access this page."), 403
+        return render_template('error.html', message="You must be admin to access this page."), 403
 
     # This inverts the value of hidden, toggling it
     query = "UPDATE post SET hidden = NOT hidden WHERE post_id = %s"

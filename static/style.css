@@ -70,7 +70,7 @@ p { margin: 1rem; }
 
 .error { color: #B3261E; }
 .success { color: #197023; }
-
+div.error { background-color:  #F9DEDC; }
 
 textarea, input, button {
     text-align: center;
